@@ -1,0 +1,1027 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		554FCB6F2FA606D400E4E9B2 /* ConnectionDiagnostics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554FCB6E2FA606D400E4E9B2 /* ConnectionDiagnostics.swift */; };
+		554FCB702FA606D400E4E9B2 /* ConnectionDiagnostics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554FCB6E2FA606D400E4E9B2 /* ConnectionDiagnostics.swift */; };
+		554FCB722FA60CF200E4E9B2 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 554FCB712FA60CF200E4E9B2 /* ContentView.swift */; };
+		557A2F322FC4B3F500C56C70 /* PacketTunnelTransportMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557A2F312FC4B3F500C56C70 /* PacketTunnelTransportMode.swift */; };
+		557A2F332FC4B3F500C56C70 /* PacketTunnelTransportMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 557A2F312FC4B3F500C56C70 /* PacketTunnelTransportMode.swift */; };
+		559BDA1D2FAB9C400054A4CD /* SubscriptionDebugHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 559BDA1C2FAB9C400054A4CD /* SubscriptionDebugHelper.swift */; };
+		55A6FBF32F87FCA8009CA702 /* PacketTunnelEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6FBF22F87FCA8009CA702 /* PacketTunnelEngine.swift */; };
+		55A6FBF52F882459009CA702 /* PacketTunnelConfigurationBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6FBF42F882459009CA702 /* PacketTunnelConfigurationBuilder.swift */; };
+		55A6FBF72F88269C009CA702 /* VPNDebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6FBF62F88269C009CA702 /* VPNDebugLog.swift */; };
+		55A6FBF92F882BC2009CA702 /* VPNDebugView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55A6FBF82F882BC2009CA702 /* VPNDebugView.swift */; };
+		55AC06EE2F893D3D00480C41 /* VPNRoutingRules.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55AC06ED2F893D3D00480C41 /* VPNRoutingRules.swift */; };
+		55AD1E862F9FD688004BBC65 /* MyVPNShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55AD1E852F9FD688004BBC65 /* MyVPNShortcuts.swift */; };
+		55B4ED7D2F92245B00BBE658 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55B4ED7C2F92245A00BBE658 /* NetworkExtension.framework */; };
+		55B4ED852F92245B00BBE658 /* MyVPNPacketTunnel.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 55B4ED7A2F92245A00BBE658 /* MyVPNPacketTunnel.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		55B4ED8B2F92256E00BBE658 /* PacketTunnelProviderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55BEC28B2F8AD5540000AD0B /* PacketTunnelProviderConfiguration.swift */; };
+		55B4FA4D2F9559E600BBE658 /* Libbox.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55B4FA4C2F9559E600BBE658 /* Libbox.xcframework */; };
+		55B4FA4E2F9559E600BBE658 /* Libbox.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55B4FA4C2F9559E600BBE658 /* Libbox.xcframework */; };
+		55BEC28C2F8AD5540000AD0B /* PacketTunnelProviderConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55BEC28B2F8AD5540000AD0B /* PacketTunnelProviderConfiguration.swift */; };
+		55CC68A12F9E3D4700F90BD9 /* geosite.dat in Resources */ = {isa = PBXBuildFile; fileRef = 55CC68A02F9E3D4700F90BD9 /* geosite.dat */; };
+		55CC68A22F9E3D4700F90BD9 /* geosite.dat in Resources */ = {isa = PBXBuildFile; fileRef = 55CC68A02F9E3D4700F90BD9 /* geosite.dat */; };
+		55CC68A42F9E3D6700F90BD9 /* geoip.dat in Resources */ = {isa = PBXBuildFile; fileRef = 55CC68A32F9E3D6700F90BD9 /* geoip.dat */; };
+		55CC68A52F9E3D6700F90BD9 /* geoip.dat in Resources */ = {isa = PBXBuildFile; fileRef = 55CC68A32F9E3D6700F90BD9 /* geoip.dat */; };
+		55D7E9EE2FA5397600AD6120 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55D7E9EC2FA5397600AD6120 /* Localizable.strings */; };
+		55D7E9EF2FA5397600AD6120 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 55D7E9EC2FA5397600AD6120 /* Localizable.strings */; };
+		55DF0BCF2FCB5BA100E3A7C3 /* NetworkExtension.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55B4ED7C2F92245A00BBE658 /* NetworkExtension.framework */; };
+		55DF0BD72FCB5BA100E3A7C3 /* MyVPNVKTurnTunnel.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 55DF0BCE2FCB5BA000E3A7C3 /* MyVPNVKTurnTunnel.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		55DF0BE62FCB625D00E3A7C3 /* WireGuardTURN.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 55B02BD62FC7856A006EAA9A /* WireGuardTURN.xcframework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		5591A4252F85892B006002B2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5591A40C2F858928006002B2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5591A4132F858928006002B2;
+			remoteInfo = MyVPNClean;
+		};
+		5591A42F2F85892B006002B2 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5591A40C2F858928006002B2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5591A4132F858928006002B2;
+			remoteInfo = MyVPNClean;
+		};
+		55B4ED832F92245B00BBE658 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5591A40C2F858928006002B2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 55B4ED792F92245A00BBE658;
+			remoteInfo = MyVPNPacketTunnel;
+		};
+		55DF0BD52FCB5BA100E3A7C3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5591A40C2F858928006002B2 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 55DF0BCD2FCB5BA000E3A7C3;
+			remoteInfo = MyVPNVKTurnTunnel;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		55B4ED862F92245B00BBE658 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				55B4ED852F92245B00BBE658 /* MyVPNPacketTunnel.appex in Embed Foundation Extensions */,
+				55DF0BD72FCB5BA100E3A7C3 /* MyVPNVKTurnTunnel.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		554FCB6E2FA606D400E4E9B2 /* ConnectionDiagnostics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionDiagnostics.swift; sourceTree = "<group>"; };
+		554FCB712FA60CF200E4E9B2 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		557A2F312FC4B3F500C56C70 /* PacketTunnelTransportMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelTransportMode.swift; sourceTree = "<group>"; };
+		5591A4142F858928006002B2 /* MyVPNClean.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MyVPNClean.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5591A4242F85892B006002B2 /* MyVPNCleanTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyVPNCleanTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5591A42E2F85892B006002B2 /* MyVPNCleanUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyVPNCleanUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		559BDA1C2FAB9C400054A4CD /* SubscriptionDebugHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionDebugHelper.swift; sourceTree = "<group>"; };
+		55A6FBF22F87FCA8009CA702 /* PacketTunnelEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelEngine.swift; sourceTree = "<group>"; };
+		55A6FBF42F882459009CA702 /* PacketTunnelConfigurationBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelConfigurationBuilder.swift; sourceTree = "<group>"; };
+		55A6FBF62F88269C009CA702 /* VPNDebugLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VPNDebugLog.swift; sourceTree = "<group>"; };
+		55A6FBF82F882BC2009CA702 /* VPNDebugView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VPNDebugView.swift; sourceTree = "<group>"; };
+		55AC06ED2F893D3D00480C41 /* VPNRoutingRules.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VPNRoutingRules.swift; sourceTree = "<group>"; };
+		55AD1E852F9FD688004BBC65 /* MyVPNShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyVPNShortcuts.swift; sourceTree = "<group>"; };
+		55B02BD62FC7856A006EAA9A /* WireGuardTURN.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = WireGuardTURN.xcframework; sourceTree = "<group>"; };
+		55B4ED7A2F92245A00BBE658 /* MyVPNPacketTunnel.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MyVPNPacketTunnel.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		55B4ED7C2F92245A00BBE658 /* NetworkExtension.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NetworkExtension.framework; path = System/Library/Frameworks/NetworkExtension.framework; sourceTree = SDKROOT; };
+		55B4FA4C2F9559E600BBE658 /* Libbox.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Libbox.xcframework; sourceTree = "<group>"; };
+		55BEC28B2F8AD5540000AD0B /* PacketTunnelProviderConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PacketTunnelProviderConfiguration.swift; sourceTree = "<group>"; };
+		55CC68A02F9E3D4700F90BD9 /* geosite.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = geosite.dat; sourceTree = "<group>"; };
+		55CC68A32F9E3D6700F90BD9 /* geoip.dat */ = {isa = PBXFileReference; lastKnownFileType = file; path = geoip.dat; sourceTree = "<group>"; };
+		55D7E9ED2FA5397600AD6120 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		55D7E9F02FA539FB00AD6120 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		55DF0BCE2FCB5BA000E3A7C3 /* MyVPNVKTurnTunnel.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = MyVPNVKTurnTunnel.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		55B4ED892F92245B00BBE658 /* Exceptions for "MyVPNPacketTunnel" folder in "MyVPNPacketTunnel" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 55B4ED792F92245A00BBE658 /* MyVPNPacketTunnel */;
+		};
+		55B999A42FCCB82A00436E9C /* Exceptions for "MyVPNClean" folder in "MyVPNClean" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 5591A4132F858928006002B2 /* MyVPNClean */;
+		};
+		55B999A52FCCB84F00436E9C /* Exceptions for "MyVPNVKTurnTunnel" folder in "MyVPNVKTurnTunnel" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 55DF0BCD2FCB5BA000E3A7C3 /* MyVPNVKTurnTunnel */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		5591A4162F858928006002B2 /* MyVPNClean */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				55B999A42FCCB82A00436E9C /* Exceptions for "MyVPNClean" folder in "MyVPNClean" target */,
+			);
+			path = MyVPNClean;
+			sourceTree = "<group>";
+		};
+		5591A4272F85892B006002B2 /* MyVPNCleanTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MyVPNCleanTests;
+			sourceTree = "<group>";
+		};
+		5591A4312F85892B006002B2 /* MyVPNCleanUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = MyVPNCleanUITests;
+			sourceTree = "<group>";
+		};
+		55B4ED7E2F92245B00BBE658 /* MyVPNPacketTunnel */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				55B4ED892F92245B00BBE658 /* Exceptions for "MyVPNPacketTunnel" folder in "MyVPNPacketTunnel" target */,
+			);
+			path = MyVPNPacketTunnel;
+			sourceTree = "<group>";
+		};
+		55DF0BD02FCB5BA100E3A7C3 /* MyVPNVKTurnTunnel */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				55B999A52FCCB84F00436E9C /* Exceptions for "MyVPNVKTurnTunnel" folder in "MyVPNVKTurnTunnel" target */,
+			);
+			path = MyVPNVKTurnTunnel;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5591A4112F858928006002B2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55B4FA4D2F9559E600BBE658 /* Libbox.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5591A4212F85892B006002B2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5591A42B2F85892B006002B2 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		55B4ED772F92245A00BBE658 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55B4ED7D2F92245B00BBE658 /* NetworkExtension.framework in Frameworks */,
+				55B4FA4E2F9559E600BBE658 /* Libbox.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		55DF0BCB2FCB5BA000E3A7C3 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55DF0BCF2FCB5BA100E3A7C3 /* NetworkExtension.framework in Frameworks */,
+				55DF0BE62FCB625D00E3A7C3 /* WireGuardTURN.xcframework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5591A40B2F858928006002B2 = {
+			isa = PBXGroup;
+			children = (
+				557A2F312FC4B3F500C56C70 /* PacketTunnelTransportMode.swift */,
+				559BDA1C2FAB9C400054A4CD /* SubscriptionDebugHelper.swift */,
+				554FCB712FA60CF200E4E9B2 /* ContentView.swift */,
+				554FCB6E2FA606D400E4E9B2 /* ConnectionDiagnostics.swift */,
+				55D7E9EC2FA5397600AD6120 /* Localizable.strings */,
+				55AD1E852F9FD688004BBC65 /* MyVPNShortcuts.swift */,
+				55BEC28B2F8AD5540000AD0B /* PacketTunnelProviderConfiguration.swift */,
+				55AC06ED2F893D3D00480C41 /* VPNRoutingRules.swift */,
+				55A6FBF82F882BC2009CA702 /* VPNDebugView.swift */,
+				55A6FBF62F88269C009CA702 /* VPNDebugLog.swift */,
+				55A6FBF42F882459009CA702 /* PacketTunnelConfigurationBuilder.swift */,
+				55A6FBF22F87FCA8009CA702 /* PacketTunnelEngine.swift */,
+				5591A4162F858928006002B2 /* MyVPNClean */,
+				5591A4272F85892B006002B2 /* MyVPNCleanTests */,
+				5591A4312F85892B006002B2 /* MyVPNCleanUITests */,
+				55B4ED7E2F92245B00BBE658 /* MyVPNPacketTunnel */,
+				55DF0BD02FCB5BA100E3A7C3 /* MyVPNVKTurnTunnel */,
+				55B4ED7B2F92245A00BBE658 /* Frameworks */,
+				5591A4152F858928006002B2 /* Products */,
+				55B4FA4C2F9559E600BBE658 /* Libbox.xcframework */,
+				55CC68A02F9E3D4700F90BD9 /* geosite.dat */,
+				55CC68A32F9E3D6700F90BD9 /* geoip.dat */,
+			);
+			sourceTree = "<group>";
+		};
+		5591A4152F858928006002B2 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5591A4142F858928006002B2 /* MyVPNClean.app */,
+				5591A4242F85892B006002B2 /* MyVPNCleanTests.xctest */,
+				5591A42E2F85892B006002B2 /* MyVPNCleanUITests.xctest */,
+				55B4ED7A2F92245A00BBE658 /* MyVPNPacketTunnel.appex */,
+				55DF0BCE2FCB5BA000E3A7C3 /* MyVPNVKTurnTunnel.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		55B4ED7B2F92245A00BBE658 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				55B02BD62FC7856A006EAA9A /* WireGuardTURN.xcframework */,
+				55B4ED7C2F92245A00BBE658 /* NetworkExtension.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		5591A4132F858928006002B2 /* MyVPNClean */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5591A4382F85892B006002B2 /* Build configuration list for PBXNativeTarget "MyVPNClean" */;
+			buildPhases = (
+				5591A4102F858928006002B2 /* Sources */,
+				5591A4112F858928006002B2 /* Frameworks */,
+				5591A4122F858928006002B2 /* Resources */,
+				55B4ED862F92245B00BBE658 /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				55B4ED842F92245B00BBE658 /* PBXTargetDependency */,
+				55DF0BD62FCB5BA100E3A7C3 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				5591A4162F858928006002B2 /* MyVPNClean */,
+			);
+			name = MyVPNClean;
+			packageProductDependencies = (
+			);
+			productName = MyVPNClean;
+			productReference = 5591A4142F858928006002B2 /* MyVPNClean.app */;
+			productType = "com.apple.product-type.application";
+		};
+		5591A4232F85892B006002B2 /* MyVPNCleanTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5591A43B2F85892B006002B2 /* Build configuration list for PBXNativeTarget "MyVPNCleanTests" */;
+			buildPhases = (
+				5591A4202F85892B006002B2 /* Sources */,
+				5591A4212F85892B006002B2 /* Frameworks */,
+				5591A4222F85892B006002B2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5591A4262F85892B006002B2 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				5591A4272F85892B006002B2 /* MyVPNCleanTests */,
+			);
+			name = MyVPNCleanTests;
+			packageProductDependencies = (
+			);
+			productName = MyVPNCleanTests;
+			productReference = 5591A4242F85892B006002B2 /* MyVPNCleanTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		5591A42D2F85892B006002B2 /* MyVPNCleanUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5591A43E2F85892B006002B2 /* Build configuration list for PBXNativeTarget "MyVPNCleanUITests" */;
+			buildPhases = (
+				5591A42A2F85892B006002B2 /* Sources */,
+				5591A42B2F85892B006002B2 /* Frameworks */,
+				5591A42C2F85892B006002B2 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5591A4302F85892B006002B2 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				5591A4312F85892B006002B2 /* MyVPNCleanUITests */,
+			);
+			name = MyVPNCleanUITests;
+			packageProductDependencies = (
+			);
+			productName = MyVPNCleanUITests;
+			productReference = 5591A42E2F85892B006002B2 /* MyVPNCleanUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		55B4ED792F92245A00BBE658 /* MyVPNPacketTunnel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 55B4ED8A2F92245B00BBE658 /* Build configuration list for PBXNativeTarget "MyVPNPacketTunnel" */;
+			buildPhases = (
+				55B4ED762F92245A00BBE658 /* Sources */,
+				55B4ED772F92245A00BBE658 /* Frameworks */,
+				55B4ED782F92245A00BBE658 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				55B4ED7E2F92245B00BBE658 /* MyVPNPacketTunnel */,
+			);
+			name = MyVPNPacketTunnel;
+			packageProductDependencies = (
+			);
+			productName = MyVPNPacketTunnel;
+			productReference = 55B4ED7A2F92245A00BBE658 /* MyVPNPacketTunnel.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		55DF0BCD2FCB5BA000E3A7C3 /* MyVPNVKTurnTunnel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 55DF0BD82FCB5BA100E3A7C3 /* Build configuration list for PBXNativeTarget "MyVPNVKTurnTunnel" */;
+			buildPhases = (
+				55DF0BCA2FCB5BA000E3A7C3 /* Sources */,
+				55DF0BCB2FCB5BA000E3A7C3 /* Frameworks */,
+				55DF0BCC2FCB5BA000E3A7C3 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				55DF0BD02FCB5BA100E3A7C3 /* MyVPNVKTurnTunnel */,
+			);
+			name = MyVPNVKTurnTunnel;
+			packageProductDependencies = (
+			);
+			productName = MyVPNVKTurnTunnel;
+			productReference = 55DF0BCE2FCB5BA000E3A7C3 /* MyVPNVKTurnTunnel.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5591A40C2F858928006002B2 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2610;
+				LastUpgradeCheck = 1620;
+				TargetAttributes = {
+					5591A4132F858928006002B2 = {
+						CreatedOnToolsVersion = 16.2;
+					};
+					5591A4232F85892B006002B2 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 5591A4132F858928006002B2;
+					};
+					5591A42D2F85892B006002B2 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = 5591A4132F858928006002B2;
+					};
+					55B4ED792F92245A00BBE658 = {
+						CreatedOnToolsVersion = 16.2;
+						LastSwiftMigration = 1620;
+					};
+					55DF0BCD2FCB5BA000E3A7C3 = {
+						CreatedOnToolsVersion = 26.1.1;
+					};
+				};
+			};
+			buildConfigurationList = 5591A40F2F858928006002B2 /* Build configuration list for PBXProject "MyVPNClean-VKTurnTest" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+				ru,
+			);
+			mainGroup = 5591A40B2F858928006002B2;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 5591A4152F858928006002B2 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5591A4132F858928006002B2 /* MyVPNClean */,
+				5591A4232F85892B006002B2 /* MyVPNCleanTests */,
+				5591A42D2F85892B006002B2 /* MyVPNCleanUITests */,
+				55B4ED792F92245A00BBE658 /* MyVPNPacketTunnel */,
+				55DF0BCD2FCB5BA000E3A7C3 /* MyVPNVKTurnTunnel */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5591A4122F858928006002B2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55D7E9EE2FA5397600AD6120 /* Localizable.strings in Resources */,
+				55CC68A42F9E3D6700F90BD9 /* geoip.dat in Resources */,
+				55CC68A12F9E3D4700F90BD9 /* geosite.dat in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5591A4222F85892B006002B2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5591A42C2F85892B006002B2 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		55B4ED782F92245A00BBE658 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55CC68A52F9E3D6700F90BD9 /* geoip.dat in Resources */,
+				55D7E9EF2FA5397600AD6120 /* Localizable.strings in Resources */,
+				55CC68A22F9E3D4700F90BD9 /* geosite.dat in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		55DF0BCC2FCB5BA000E3A7C3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5591A4102F858928006002B2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				55BEC28C2F8AD5540000AD0B /* PacketTunnelProviderConfiguration.swift in Sources */,
+				55AD1E862F9FD688004BBC65 /* MyVPNShortcuts.swift in Sources */,
+				55A6FBF52F882459009CA702 /* PacketTunnelConfigurationBuilder.swift in Sources */,
+				55A6FBF32F87FCA8009CA702 /* PacketTunnelEngine.swift in Sources */,
+				554FCB6F2FA606D400E4E9B2 /* ConnectionDiagnostics.swift in Sources */,
+				55A6FBF92F882BC2009CA702 /* VPNDebugView.swift in Sources */,
+				557A2F322FC4B3F500C56C70 /* PacketTunnelTransportMode.swift in Sources */,
+				559BDA1D2FAB9C400054A4CD /* SubscriptionDebugHelper.swift in Sources */,
+				55A6FBF72F88269C009CA702 /* VPNDebugLog.swift in Sources */,
+				554FCB722FA60CF200E4E9B2 /* ContentView.swift in Sources */,
+				55AC06EE2F893D3D00480C41 /* VPNRoutingRules.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5591A4202F85892B006002B2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5591A42A2F85892B006002B2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		55B4ED762F92245A00BBE658 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				557A2F332FC4B3F500C56C70 /* PacketTunnelTransportMode.swift in Sources */,
+				55B4ED8B2F92256E00BBE658 /* PacketTunnelProviderConfiguration.swift in Sources */,
+				554FCB702FA606D400E4E9B2 /* ConnectionDiagnostics.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		55DF0BCA2FCB5BA000E3A7C3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5591A4262F85892B006002B2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5591A4132F858928006002B2 /* MyVPNClean */;
+			targetProxy = 5591A4252F85892B006002B2 /* PBXContainerItemProxy */;
+		};
+		5591A4302F85892B006002B2 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5591A4132F858928006002B2 /* MyVPNClean */;
+			targetProxy = 5591A42F2F85892B006002B2 /* PBXContainerItemProxy */;
+		};
+		55B4ED842F92245B00BBE658 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 55B4ED792F92245A00BBE658 /* MyVPNPacketTunnel */;
+			targetProxy = 55B4ED832F92245B00BBE658 /* PBXContainerItemProxy */;
+		};
+		55DF0BD62FCB5BA100E3A7C3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 55DF0BCD2FCB5BA000E3A7C3 /* MyVPNVKTurnTunnel */;
+			targetProxy = 55DF0BD52FCB5BA100E3A7C3 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		55D7E9EC2FA5397600AD6120 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				55D7E9ED2FA5397600AD6120 /* en */,
+				55D7E9F02FA539FB00AD6120 /* ru */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		5591A4362F85892B006002B2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		5591A4372F85892B006002B2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		5591A4392F85892B006002B2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MyVPNClean/MyVPNClean.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 8;
+				DEVELOPMENT_ASSET_PATHS = "\"MyVPNClean/Preview Content\"";
+				DEVELOPMENT_TEAM = WK6JGG4FTZ;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MyVPNClean/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AFZ;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Scan VPN QR codes";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = alex.MyVPNClean;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		5591A43A2F85892B006002B2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = MyVPNClean/MyVPNClean.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 8;
+				DEVELOPMENT_ASSET_PATHS = "\"MyVPNClean/Preview Content\"";
+				DEVELOPMENT_TEAM = WK6JGG4FTZ;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MyVPNClean/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = AFZ;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Scan VPN QR codes";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = alex.MyVPNClean;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		5591A43C2F85892B006002B2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = WK6JGG4FTZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = alex.MyVPNCleanTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyVPNClean.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MyVPNClean";
+			};
+			name = Debug;
+		};
+		5591A43D2F85892B006002B2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = WK6JGG4FTZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = alex.MyVPNCleanTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MyVPNClean.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/MyVPNClean";
+			};
+			name = Release;
+		};
+		5591A43F2F85892B006002B2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = WK6JGG4FTZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = alex.MyVPNCleanUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MyVPNClean;
+			};
+			name = Debug;
+		};
+		5591A4402F85892B006002B2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = WK6JGG4FTZ;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = alex.MyVPNCleanUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MyVPNClean;
+			};
+			name = Release;
+		};
+		55B4ED872F92245B00BBE658 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = MyVPNPacketTunnel/MyVPNPacketTunnel.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 8;
+				DEVELOPMENT_TEAM = WK6JGG4FTZ;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)",
+					"$(SRCROOT)/WireGuardTURN.xcframework",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MyVPNPacketTunnel/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MyVPNPacketTunnel;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-lresolv";
+				PRODUCT_BUNDLE_IDENTIFIER = alex.MyVPNClean.MyVPNPacketTunnel;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "MyVPNPacketTunnel/MyVPNPacketTunnel-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		55B4ED882F92245B00BBE658 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = MyVPNPacketTunnel/MyVPNPacketTunnel.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 8;
+				DEVELOPMENT_TEAM = WK6JGG4FTZ;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)",
+					"$(SRCROOT)/WireGuardTURN.xcframework",
+				);
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MyVPNPacketTunnel/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MyVPNPacketTunnel;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				OTHER_LDFLAGS = "-lresolv";
+				PRODUCT_BUNDLE_IDENTIFIER = alex.MyVPNClean.MyVPNPacketTunnel;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "MyVPNPacketTunnel/MyVPNPacketTunnel-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		55DF0BD92FCB5BA100E3A7C3 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MyVPNVKTurnTunnel/MyVPNVKTurnTunnel.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = WK6JGG4FTZ;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Frameworks/**";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MyVPNVKTurnTunnel/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MyVPNVKTurnTunnel;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = alex.MyVPNClean.MyVPNVKTurnTunnel;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = MyVPNVKTurnTunnel/BridgeHeader.h;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		55DF0BDA2FCB5BA100E3A7C3 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = MyVPNVKTurnTunnel/MyVPNVKTurnTunnel.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = WK6JGG4FTZ;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/Frameworks/**";
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MyVPNVKTurnTunnel/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MyVPNVKTurnTunnel;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = alex.MyVPNClean.MyVPNVKTurnTunnel;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = MyVPNVKTurnTunnel/BridgeHeader.h;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5591A40F2F858928006002B2 /* Build configuration list for PBXProject "MyVPNClean-VKTurnTest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5591A4362F85892B006002B2 /* Debug */,
+				5591A4372F85892B006002B2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5591A4382F85892B006002B2 /* Build configuration list for PBXNativeTarget "MyVPNClean" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5591A4392F85892B006002B2 /* Debug */,
+				5591A43A2F85892B006002B2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5591A43B2F85892B006002B2 /* Build configuration list for PBXNativeTarget "MyVPNCleanTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5591A43C2F85892B006002B2 /* Debug */,
+				5591A43D2F85892B006002B2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5591A43E2F85892B006002B2 /* Build configuration list for PBXNativeTarget "MyVPNCleanUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5591A43F2F85892B006002B2 /* Debug */,
+				5591A4402F85892B006002B2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		55B4ED8A2F92245B00BBE658 /* Build configuration list for PBXNativeTarget "MyVPNPacketTunnel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				55B4ED872F92245B00BBE658 /* Debug */,
+				55B4ED882F92245B00BBE658 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		55DF0BD82FCB5BA100E3A7C3 /* Build configuration list for PBXNativeTarget "MyVPNVKTurnTunnel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				55DF0BD92FCB5BA100E3A7C3 /* Debug */,
+				55DF0BDA2FCB5BA100E3A7C3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5591A40C2F858928006002B2 /* Project object */;
+}
