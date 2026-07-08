@@ -80,6 +80,7 @@ struct ProfilePickerView: View {
     private func profileCard(_ profile: VPNProfile) -> some View {
         Button {
             store.selectProfile(id: profile.id)
+            _ = VKTurnProfileApplier.apply(profile)
             dismiss()
         } label: {
             VStack(alignment: .leading, spacing: 13) {

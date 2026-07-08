@@ -1078,13 +1078,23 @@ VStack(spacing: 4) {
 
     private var hasConfirmedInternet: Bool {
         if isVKTurnEngine {
-            return vkTunnel.status == .connected &&
-                vkTunnel.stats.activeConns > 0 &&
-                vkTunnel.stats.turnRTTms > 0 &&
-                (
-                    vkTunnel.stats.rxBytes > 0 ||
-                    currentRXRateKB > 0.5
-                )
+            guard vkTunnel.status == .connected else { return false }
+
+            if vkTunnel.stats.activeConns > 0 &&
+                vkTunnel.stats.turnRTTms > 0 {
+                return true
+            }
+
+            // Soft UI: during Wi-Fi/LTE handover the TURN channels may briefly
+            // drop to 0 while the tunnel is still reconnecting. If we still have
+            // a valid RTT, keep the UI from immediately jumping to yellow.
+            if vkTunnel.stats.turnRTTms > 0 &&
+                vkTunnel.stats.tunnelUptimeSec > 15 &&
+                vkTunnel.stats.reconnects > 0 {
+                return true
+            }
+
+            return false
         }
 
         return vpnManager.state == .connected &&
