@@ -76,6 +76,7 @@ class TunnelManager: ObservableObject {
     private var statusObserver: NSObjectProtocol?
     private var foregroundObserver: NSObjectProtocol?
     private var statsTimer: Timer?
+    private var disconnectGraceTimer: Timer?
     private var stalledTunnelSince: Date?
     private var lastWatchdogReconnectAt: Date?
     private var failedStatsPolls: Int = 0
@@ -797,6 +798,8 @@ class TunnelManager: ObservableObject {
                 self.status = newStatus
                 switch newStatus {
                 case .connected:
+                    self.disconnectGraceTimer?.invalidate()
+                    self.disconnectGraceTimer = nil
                     // Stamp the moment we first reach .connected so StatsView
                     // can render a live uptime via TimelineView. Don't reset
                     // on .connecting/.reasserting cycles inside an existing
@@ -825,6 +828,8 @@ class TunnelManager: ObservableObject {
                         self.stopCaptchaAutoRefresh()
                     }
                 case .connecting, .reasserting:
+                    self.disconnectGraceTimer?.invalidate()
+                    self.disconnectGraceTimer = nil
                     // CRITICAL for Step 4 architecture (deferred-setTunnelNetworkSettings):
                     // When the PoW auto-solver fails on a captcha it can't crack, the
                     // proxy goroutine surfaces the captcha redirect_uri via get_stats
@@ -843,10 +848,20 @@ class TunnelManager: ObservableObject {
                     // we go through bootstrap again and may need a fresh captcha.
                     self.startStatsPolling(reset: false)
                 case .disconnected, .invalid:
-                    // Terminal states — full cleanup
-                    self.stopStatsPolling()
-                    self.resetCaptchaState()
-                    self.connectedAt = nil
+                    // Grace period for transient iOS handover states.
+                    // During Wi-Fi/LTE switching iOS may briefly report
+                    // disconnected before reasserting the same tunnel.
+                    self.disconnectGraceTimer?.invalidate()
+                    self.disconnectGraceTimer = Timer.scheduledTimer(withTimeInterval: 10, repeats: false) { [weak self] _ in
+                        Task { @MainActor in
+                            guard let self = self else { return }
+                            guard self.status == .disconnected || self.status == .invalid else { return }
+                            self.stopStatsPolling()
+                            self.resetCaptchaState()
+                            self.connectedAt = nil
+                            self.disconnectGraceTimer = nil
+                        }
+                    }
                 default:
                     // .disconnecting only — keep polling/state, the tunnel
                     // may recover momentarily (e.g., sleep/wake cycle).
