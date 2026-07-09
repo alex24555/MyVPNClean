@@ -113,6 +113,10 @@ type Stats struct {
 	TunnelUptimeSec   int64 `json:"tunnel_uptime_sec"`    // seconds since the proxy instance was created — the iOS UI uses this to render Uptime independent of main-app lifecycle (resists jetsam-respawn of the main app while extension keeps running)
 	CaptchaImageURL  string  `json:"captcha_image_url,omitempty"` // non-empty when captcha is pending
 	CaptchaSID       string  `json:"captcha_sid,omitempty"`       // captcha_sid for the pending captcha
+	SendQueueDepth   int     `json:"send_queue_depth"`
+	SendQueueCap     int     `json:"send_queue_cap"`
+	RecvQueueDepth   int     `json:"recv_queue_depth"`
+	RecvQueueCap     int     `json:"recv_queue_cap"`
 }
 
 // Proxy manages the DTLS+TURN tunnel to the peer server.
@@ -1441,6 +1445,10 @@ func (p *Proxy) GetStats() Stats {
 		TunnelUptimeSec:   int64(time.Since(p.startedAt).Seconds()),
 		CaptchaImageURL:   captchaURL,
 		CaptchaSID:        captchaSID,
+		SendQueueDepth:    len(p.sendCh),
+		SendQueueCap:      cap(p.sendCh),
+		RecvQueueDepth:    len(p.recvCh),
+		RecvQueueCap:      cap(p.recvCh),
 	}
 }
 

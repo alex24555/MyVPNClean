@@ -44,6 +44,10 @@ struct TunnelStats: Codable {
     var tunnelUptimeSec: Int64 = 0
     var captchaImageURL: String?
     var captchaSID: String?
+    var sendQueueDepth: Int = 0
+    var sendQueueCap: Int = 0
+    var recvQueueDepth: Int = 0
+    var recvQueueCap: Int = 0
 
     enum CodingKeys: String, CodingKey {
         case txBytes = "tx_bytes"
@@ -60,6 +64,10 @@ struct TunnelStats: Codable {
         case tunnelUptimeSec = "tunnel_uptime_sec"
         case captchaImageURL = "captcha_image_url"
         case captchaSID = "captcha_sid"
+        case sendQueueDepth = "send_queue_depth"
+        case sendQueueCap = "send_queue_cap"
+        case recvQueueDepth = "recv_queue_depth"
+        case recvQueueCap = "recv_queue_cap"
     }
 }
 
@@ -1093,7 +1101,7 @@ class TunnelManager: ObservableObject {
                     }
 
                     self.failedStatsPolls = 0
-                    self.debugLog("telemetry: stats poll activeConns=\(newStats.activeConns)/\(VKTurnSettings.numConnections) reconnects=\(newStats.reconnects) uptime=\(newStats.tunnelUptimeSec) turnRTT=\(Int(newStats.turnRTTms))")
+                    self.debugLog("telemetry: stats poll activeConns=\(newStats.activeConns)/\(VKTurnSettings.numConnections) reconnects=\(newStats.reconnects) uptime=\(newStats.tunnelUptimeSec) turnRTT=\(Int(newStats.turnRTTms)) sendQ=\(newStats.sendQueueDepth)/\(newStats.sendQueueCap) recvQ=\(newStats.recvQueueDepth)/\(newStats.recvQueueCap)")
                     if true {
                         let now = Date()
                         let dt = now.timeIntervalSince(self.prevTime)
