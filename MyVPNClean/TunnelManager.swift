@@ -86,6 +86,7 @@ class TunnelManager: ObservableObject {
     private var statsTimer: Timer?
     private var disconnectGraceTimer: Timer?
     private var stalledTunnelSince: Date?
+    private var queuePressureSince: Date?
     private var lastWatchdogReconnectAt: Date?
     private var failedStatsPolls: Int = 0
     private var lastLoggedActiveConns: Int32?
@@ -953,6 +954,7 @@ class TunnelManager: ObservableObject {
     private func checkStalledTunnelWatchdog(_ newStats: TunnelStats) {
         guard status == .connected else {
             stalledTunnelSince = nil
+            queuePressureSince = nil
             return
         }
 
@@ -972,11 +974,37 @@ class TunnelManager: ObservableObject {
         // Treat that as stalled even before user-visible traffic starts.
         let hardZeroStats = noActiveConnections && noTurnRTT && noUptime
 
-        guard !queuePressure else {
+        if queuePressure {
             stalledTunnelSince = nil
-            debugLog("watchdog: queue pressure detected — hold reconnect sendQ=\(newStats.sendQueueDepth)/\(newStats.sendQueueCap) recvQ=\(newStats.recvQueueDepth)/\(newStats.recvQueueCap)")
+
+            if queuePressureSince == nil {
+                queuePressureSince = now
+                debugLog("watchdog: queue pressure started — sendQ=\(newStats.sendQueueDepth)/\(newStats.sendQueueCap) recvQ=\(newStats.recvQueueDepth)/\(newStats.recvQueueCap)")
+                return
+            }
+
+            guard let since = queuePressureSince else { return }
+            let pressuredFor = now.timeIntervalSince(since)
+
+            // A busy queue alone is not a failure. Recover only when the
+            // pressure persists and the TURN fan-out also looks unhealthy.
+            let transportUnhealthy = noActiveConnections || noTurnRTT
+            guard pressuredFor >= 20 && transportUnhealthy else { return }
+
+            if let last = lastWatchdogReconnectAt,
+               now.timeIntervalSince(last) < 30 {
+                return
+            }
+
+            lastWatchdogReconnectAt = now
+            queuePressureSince = nil
+
+            debugLog("watchdog: queue pressure stuck for \(Int(pressuredFor))s — requesting force_reconnect")
+            requestForceReconnect(reason: "sustained_queue_pressure")
             return
         }
+
+        queuePressureSince = nil
 
         guard (noActiveConnections && noTraffic) || hardZeroStats else {
             stalledTunnelSince = nil
