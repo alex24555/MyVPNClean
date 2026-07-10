@@ -442,18 +442,6 @@ VStack(spacing: 4) {
                         title: text("Reconnects", "Переподключения"),
                         value: "\(vkTunnel.stats.reconnects)"
                     )
-
-                    infoRow(
-                        icon: "tray.and.arrow.up",
-                        title: text("Send Queue", "Очередь отправки"),
-                        value: "\(vkTunnel.stats.sendQueueDepth)/\(vkTunnel.stats.sendQueueCap)"
-                    )
-
-                    infoRow(
-                        icon: "tray.and.arrow.down",
-                        title: text("Recv Queue", "Очередь приёма"),
-                        value: "\(vkTunnel.stats.recvQueueDepth)/\(vkTunnel.stats.recvQueueCap)"
-                    )
                 } else {
                     infoRow(icon: "timer", title: text("Latency", "Задержка"), value: diagnostics.latencyText)
                     infoRow(icon: "network", title: text("External IP", "Внешний IP"), value: diagnostics.externalIP)

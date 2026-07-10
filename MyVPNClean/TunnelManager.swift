@@ -960,12 +960,23 @@ class TunnelManager: ObservableObject {
         let noTraffic = abs(rxRate) < 1 && abs(txRate) < 1
         let noTurnRTT = newStats.turnRTTms <= 0
         let noUptime = newStats.tunnelUptimeSec <= 0
+        let sendQueuePressure = newStats.sendQueueCap > 0 &&
+            newStats.sendQueueDepth >= Int(Double(newStats.sendQueueCap) * 0.75)
+        let recvQueuePressure = newStats.recvQueueCap > 0 &&
+            newStats.recvQueueDepth >= Int(Double(newStats.recvQueueCap) * 0.75)
+        let queuePressure = sendQueuePressure || recvQueuePressure
         let now = Date()
 
         // VK TURN can look "connected" at iOS level while the internal TURN
         // fan-out is dead/not restored yet: active=0/30, RTT=0, uptime=0.
         // Treat that as stalled even before user-visible traffic starts.
         let hardZeroStats = noActiveConnections && noTurnRTT && noUptime
+
+        guard !queuePressure else {
+            stalledTunnelSince = nil
+            debugLog("watchdog: queue pressure detected — hold reconnect sendQ=\(newStats.sendQueueDepth)/\(newStats.sendQueueCap) recvQ=\(newStats.recvQueueDepth)/\(newStats.recvQueueCap)")
+            return
+        }
 
         guard (noActiveConnections && noTraffic) || hardZeroStats else {
             stalledTunnelSince = nil
