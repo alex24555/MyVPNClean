@@ -727,18 +727,37 @@ func (p *Proxy) runSendDispatcher() {
 			start := int(p.dispatchNext.Add(1)-1) % n
 			sent := false
 
-			for offset := 0; offset < n; offset++ {
-				idx := (start + offset) % n
+			// First prefer channels with a recent liveness pong.
+			// If none is ready, fall back to any ready channel so traffic
+			// is never blocked only because probe information is stale.
+			probeAware := p.serverProbeable.Load()
+			passes := 1
+			if probeAware {
+				passes = 2
+			}
+			freshCutoff := time.Now().Add(-probeStaleThreshold / 2).Unix()
 
-				select {
-				case p.connSendCh[idx] <- pkt:
-					p.dispatchNext.Store(uint32(idx + 1))
-					sent = true
-				default:
-				}
+			for pass := 0; pass < passes && !sent; pass++ {
+				for offset := 0; offset < n; offset++ {
+					idx := (start + offset) % n
 
-				if sent {
-					break
+					if probeAware && pass == 0 {
+						lastPong := p.lastPongTimes[idx].Load()
+						if lastPong == 0 || lastPong < freshCutoff {
+							continue
+						}
+					}
+
+					select {
+					case p.connSendCh[idx] <- pkt:
+						p.dispatchNext.Store(uint32(idx + 1))
+						sent = true
+					default:
+					}
+
+					if sent {
+						break
+					}
 				}
 			}
 
