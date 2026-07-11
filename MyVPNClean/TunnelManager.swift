@@ -155,7 +155,12 @@ class TunnelManager: ObservableObject {
         ) { [weak self] _ in
             Task { @MainActor in
                 guard let self = self else { return }
-                if self.status == .connected {
+
+                let systemStatus = self.manager?.connection.status ?? self.status
+                self.status = systemStatus
+                self.debugLog("foreground: synced system VPN status=\(systemStatus.rawValue)")
+
+                if systemStatus == .connected || systemStatus == .reasserting || systemStatus == .connecting {
                     self.startStatsPolling(reset: false)
                 }
                 // If the auto-refresh overlay was up when the app went to

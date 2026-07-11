@@ -32,12 +32,12 @@ import (
 
 // Config holds proxy configuration.
 type Config struct {
-	PeerAddr      string        // vk-turn-proxy server address (host:port)
-	TurnServer    string        // override TURN server host (optional)
-	TurnPort      string        // override TURN port (optional)
-	VKLink        string        // VK call invite link or link ID
-	UseDTLS       bool          // true = DTLS obfuscation (default mode)
-	UseUDP        bool          // true = UDP to TURN, false = TCP
+	PeerAddr         string        // vk-turn-proxy server address (host:port)
+	TurnServer       string        // override TURN server host (optional)
+	TurnPort         string        // override TURN port (optional)
+	VKLink           string        // VK call invite link or link ID
+	UseDTLS          bool          // true = DTLS obfuscation (default mode)
+	UseUDP           bool          // true = UDP to TURN, false = TCP
 	NumConns         int           // number of concurrent connections (default 1)
 	CredPoolCooldown time.Duration // post-failure cooldown per slot in the cred pool; <=0 → default 2m
 	CaptchaSolver    CaptchaSolver // called when VK requires captcha (may be nil)
@@ -99,24 +99,24 @@ type Config struct {
 
 // Stats holds live tunnel statistics.
 type Stats struct {
-	TxBytes          int64   `json:"tx_bytes"`
-	RxBytes          int64   `json:"rx_bytes"`
-	ActiveConns      int32   `json:"active_conns"`
-	TotalConns       int32   `json:"total_conns"`
-	TurnRTTms        float64 `json:"turn_rtt_ms"`                 // last TURN Allocate RTT
-	DTLSHandshakeMs  float64 `json:"dtls_handshake_ms"`           // last DTLS handshake time
-	LastHandshakeSec int64   `json:"last_handshake_sec"`          // seconds since last WG handshake
-	Reconnects       int64   `json:"reconnects"`                  // total TURN reconnects
-	CredPoolFilled    int32 `json:"cred_pool_filled"`     // slots usable for NEW conns (fresh: cred present, not expiring within 30 min, not pending, not saturated)
-	CredPoolWithCreds int32 `json:"cred_pool_with_creds"` // slots physically holding a cred — superset of CredPoolFilled. Diverges when a cred crosses the 30-min expiry buffer: drops out of "fresh", but existing conns on it stay alive until VK-side allocation expires
-	CredPoolSize      int32 `json:"cred_pool_size"`       // total cred pool capacity
-	TunnelUptimeSec   int64 `json:"tunnel_uptime_sec"`    // seconds since the proxy instance was created — the iOS UI uses this to render Uptime independent of main-app lifecycle (resists jetsam-respawn of the main app while extension keeps running)
-	CaptchaImageURL  string  `json:"captcha_image_url,omitempty"` // non-empty when captcha is pending
-	CaptchaSID       string  `json:"captcha_sid,omitempty"`       // captcha_sid for the pending captcha
-	SendQueueDepth   int     `json:"send_queue_depth"`
-	SendQueueCap     int     `json:"send_queue_cap"`
-	RecvQueueDepth   int     `json:"recv_queue_depth"`
-	RecvQueueCap     int     `json:"recv_queue_cap"`
+	TxBytes           int64   `json:"tx_bytes"`
+	RxBytes           int64   `json:"rx_bytes"`
+	ActiveConns       int32   `json:"active_conns"`
+	TotalConns        int32   `json:"total_conns"`
+	TurnRTTms         float64 `json:"turn_rtt_ms"`                 // last TURN Allocate RTT
+	DTLSHandshakeMs   float64 `json:"dtls_handshake_ms"`           // last DTLS handshake time
+	LastHandshakeSec  int64   `json:"last_handshake_sec"`          // seconds since last WG handshake
+	Reconnects        int64   `json:"reconnects"`                  // total TURN reconnects
+	CredPoolFilled    int32   `json:"cred_pool_filled"`            // slots usable for NEW conns (fresh: cred present, not expiring within 30 min, not pending, not saturated)
+	CredPoolWithCreds int32   `json:"cred_pool_with_creds"`        // slots physically holding a cred — superset of CredPoolFilled. Diverges when a cred crosses the 30-min expiry buffer: drops out of "fresh", but existing conns on it stay alive until VK-side allocation expires
+	CredPoolSize      int32   `json:"cred_pool_size"`              // total cred pool capacity
+	TunnelUptimeSec   int64   `json:"tunnel_uptime_sec"`           // seconds since the proxy instance was created — the iOS UI uses this to render Uptime independent of main-app lifecycle (resists jetsam-respawn of the main app while extension keeps running)
+	CaptchaImageURL   string  `json:"captcha_image_url,omitempty"` // non-empty when captcha is pending
+	CaptchaSID        string  `json:"captcha_sid,omitempty"`       // captcha_sid for the pending captcha
+	SendQueueDepth    int     `json:"send_queue_depth"`
+	SendQueueCap      int     `json:"send_queue_cap"`
+	RecvQueueDepth    int     `json:"recv_queue_depth"`
+	RecvQueueCap      int     `json:"recv_queue_cap"`
 }
 
 // Proxy manages the DTLS+TURN tunnel to the peer server.
@@ -128,9 +128,13 @@ type Proxy struct {
 	peer   *net.UDPAddr
 	linkID string
 
-	// For packet I/O from the WireGuard side
-	sendCh chan []byte
-	recvCh chan []byte
+	// For packet I/O from the WireGuard side.
+	// sendCh stays the common input queue from WireGuard.
+	// connSendCh contains one queue per transport connection.
+	sendCh       chan []byte
+	recvCh       chan []byte
+	connSendCh   []chan []byte
+	dispatchNext atomic.Uint32
 
 	wg sync.WaitGroup
 
@@ -347,15 +351,16 @@ func NewProxy(cfg Config) *Proxy {
 	ctx, cancel := context.WithCancel(context.Background())
 	sessCtx, sessCancel := context.WithCancel(ctx)
 	p := &Proxy{
-		config:          cfg,
-		ctx:             ctx,
-		cancel:          cancel,
-		sendCh:          make(chan []byte, 256),
-		recvCh:          make(chan []byte, 256),
-		sessCtx:         sessCtx,
-		sessCancel:      sessCancel,
-		captchaCh:       make(chan string, 1),
-		bootstrapDoneCh: make(chan error, 1),
+		config:            cfg,
+		ctx:               ctx,
+		cancel:            cancel,
+		sendCh:            make(chan []byte, 256),
+		recvCh:            make(chan []byte, 256),
+		connSendCh:        make([]chan []byte, cfg.NumConns),
+		sessCtx:           sessCtx,
+		sessCancel:        sessCancel,
+		captchaCh:         make(chan string, 1),
+		bootstrapDoneCh:   make(chan error, 1),
 		lastPongTimes:     make([]atomic.Int64, cfg.NumConns),
 		lastPingSeq:       make([]atomic.Uint64, cfg.NumConns),
 		lastPongSeq:       make([]atomic.Uint64, cfg.NumConns),
@@ -368,6 +373,10 @@ func NewProxy(cfg Config) *Proxy {
 		wakeCh:            make(chan struct{}),
 		startedAt:         time.Now(),
 	}
+	for i := range p.connSendCh {
+		p.connSendCh[i] = make(chan []byte)
+	}
+
 	// If no external solver provided, use the built-in channel-based solver
 	// that waits for SolveCaptcha() to be called (e.g. from iOS UI).
 	if p.config.CaptchaSolver == nil {
@@ -476,6 +485,9 @@ func (p *Proxy) Start() error {
 	}
 	p.peer = peer
 
+	// Dispatch WireGuard packets to per-connection send queues.
+	go p.runSendDispatcher()
+
 	// Start watchdog goroutine to detect dead tunnels after iOS freeze/thaw.
 	// This is the primary self-healing mechanism — it doesn't rely on iOS
 	// calling sleep()/wake() which is unreliable.
@@ -554,6 +566,7 @@ func (p *Proxy) Start() error {
 //     records a cooldown instead of blocking on user input.
 //   - Fast poll (2s) while there is work to do, slow poll (30s) when all
 //     slots are full or on cooldown.
+//
 // Lifetime = p.ctx (stops on Proxy.Stop).
 func (p *Proxy) growCredPool(ctx context.Context) {
 	// Wait until the first conn has a live DTLS+TURN session. There's no
@@ -685,6 +698,61 @@ func (p *Proxy) growCredPool(ctx context.Context) {
 			// Below cold-start target → keep filling fast. Per-slot
 			// cooldown inside tryFill prevents hammering a dead slot.
 			interval = fastInterval
+		}
+	}
+}
+
+// runSendDispatcher distributes packets from the common WireGuard queue
+// among currently-ready connection send goroutines.
+//
+// Per-connection channels are unbuffered. A slot accepts a packet only while
+// its transport sender is alive and waiting, so disconnected or rebuilding
+// connections are skipped automatically.
+func (p *Proxy) runSendDispatcher() {
+	n := len(p.connSendCh)
+	if n == 0 {
+		return
+	}
+
+	for {
+		var pkt []byte
+
+		select {
+		case <-p.ctx.Done():
+			return
+		case pkt = <-p.sendCh:
+		}
+
+		for {
+			start := int(p.dispatchNext.Add(1)-1) % n
+			sent := false
+
+			for offset := 0; offset < n; offset++ {
+				idx := (start + offset) % n
+
+				select {
+				case p.connSendCh[idx] <- pkt:
+					p.dispatchNext.Store(uint32(idx + 1))
+					sent = true
+				default:
+				}
+
+				if sent {
+					break
+				}
+			}
+
+			if sent {
+				break
+			}
+
+			// No connection sender is currently ready. Preserve normal
+			// backpressure instead of dropping the WireGuard packet.
+			select {
+			case <-p.ctx.Done():
+				return
+			case <-time.After(time.Millisecond):
+			}
 		}
 	}
 }
@@ -1193,6 +1261,7 @@ func (p *Proxy) wakeChannel() <-chan struct{} {
 //   - Captcha-triggered slow ramp-up commonly leaves us at "10/30 active
 //     for 5+ min" while VK rate-limits PoW for our IP. Forcing reconnect
 //     in that state killed 10 working conns and didn't help unstick VK.
+//
 // runDiagnosticHeartbeat fires a single-line log every `interval` for up
 // to `window` total duration. Purpose: confirm the extension process is
 // still alive at known timestamps when otherwise quiet (post-cold-start
@@ -2378,7 +2447,7 @@ func (p *Proxy) runDTLSSession(sessCtx context.Context, linkID string, readyCh c
 			case <-connCtx.Done():
 				log.Printf("proxy: [conn %d] DTLS send goroutine: ctx cancelled", connIdx)
 				return
-			case pkt := <-p.sendCh:
+			case pkt := <-p.connSendCh[connIdx]:
 				dtlsConn.SetWriteDeadline(time.Now().Add(30 * time.Second))
 				if _, err := dtlsConn.Write(pkt); err != nil {
 					log.Printf("proxy: [conn %d] DTLS send goroutine: write error: %v", connIdx, err)
@@ -2628,7 +2697,7 @@ func (p *Proxy) runDirectSession(sessCtx context.Context, linkID string, readyCh
 			select {
 			case <-connCtx.Done():
 				return
-			case pkt := <-p.sendCh:
+			case pkt := <-p.connSendCh[connIdx]:
 				conn1.SetWriteDeadline(time.Now().Add(30 * time.Second))
 				if _, err := conn1.WriteTo(pkt, p.peer); err != nil {
 					return
@@ -2989,8 +3058,8 @@ func (p *Proxy) dumpConnStats(prevTx, prevRx []int64, prevTime time.Time, label 
 	}
 
 	type row struct {
-		idx        int
-		tx, rx     int64 // delta in interval
+		idx          int
+		tx, rx       int64 // delta in interval
 		txCum, rxCum int64
 	}
 	rows := make([]row, n)
@@ -3059,31 +3128,31 @@ var PhysFootprintFn func() uint64
 //
 // What to look for:
 //   - rss:            phys_footprint via Mach task_info — what iOS
-//                     jetsam actually evaluates. The headline number;
-//                     "n/a" if PhysFootprintFn isn't wired up.
+//     jetsam actually evaluates. The headline number;
+//     "n/a" if PhysFootprintFn isn't wired up.
 //   - sys:            bytes Go mapped from the OS. Useful as a ceiling,
-//                     but on Darwin can overstate by 10-20 MB because
-//                     released pages stay in the address space until
-//                     pressure forces reclaim.
+//     but on Darwin can overstate by 10-20 MB because
+//     released pages stay in the address space until
+//     pressure forces reclaim.
 //   - heap-alloc:     bytes of currently-live heap objects.
 //   - heap-inuse:     in-use spans (>= heap-alloc; gap is fragmentation
-//                     or retained-but-not-live within active spans).
+//     or retained-but-not-live within active spans).
 //   - heap-idle:      bytes in idle (unused) spans, candidates for
-//                     return-to-OS.
+//     return-to-OS.
 //   - heap-released:  bytes Go has explicitly released to the OS via
-//                     madvise. If rss << sys, this is where the
-//                     difference lives. heap-released growing alongside
-//                     allocation churn = scavenger working; heap-released
-//                     stuck at zero while sys climbs = scavenger lazy.
+//     madvise. If rss << sys, this is where the
+//     difference lives. heap-released growing alongside
+//     allocation churn = scavenger working; heap-released
+//     stuck at zero while sys climbs = scavenger lazy.
 //   - stack:          total stack memory (with hundreds of goroutines
-//                     and 8 KB initial stacks each, this is in the MB
-//                     range and not affected by GOMEMLIMIT).
+//     and 8 KB initial stacks each, this is in the MB
+//     range and not affected by GOMEMLIMIT).
 //   - heap-objects:   count of live objects (rises with allocation
-//                     leaks even when alloc bytes look stable).
+//     leaks even when alloc bytes look stable).
 //   - goroutines:     leak indicator; should stabilise at roughly
-//                     NumConns × small-constant once startup settles.
+//     NumConns × small-constant once startup settles.
 //   - numGC:          GC cycle count; high deltas between ticks mean
-//                     heavy alloc churn even if heap-alloc is steady.
+//     heavy alloc churn even if heap-alloc is steady.
 //
 // Final dump on shutdown captures the moment-of-death snapshot in
 // the same place — useful when comparing pre-kill state across
@@ -3172,16 +3241,16 @@ func pathSnapshotOSDefault() string {
 //
 // What to look for:
 //   - os-default:  current OS-picked source IP for new outbound UDP.
-//                  Compare across ticks to spot rebinds that didn't
-//                  fire a [PathMonitor] event.
+//     Compare across ticks to spot rebinds that didn't
+//     fire a [PathMonitor] event.
 //   - in-sync:     count of currently-allocated conns whose
-//                  allocation-time local IP matches os-default. In
-//                  steady state this should be NumConns/NumConns once
-//                  bootstrap finishes.
+//     allocation-time local IP matches os-default. In
+//     steady state this should be NumConns/NumConns once
+//     bootstrap finishes.
 //   - stale:       any local IPs (and conn counts) that don't match
-//                  os-default. Non-zero stale = some allocations are
-//                  living on a doomed interface. Empty list if none
-//                  (omitted from log to keep the line short).
+//     os-default. Non-zero stale = some allocations are
+//     living on a doomed interface. Empty list if none
+//     (omitted from log to keep the line short).
 //
 // Conns whose connLocalIPs entry is empty (not currently allocated —
 // dormant, bootstrap-pending, or just torn down) are excluded from
@@ -3513,7 +3582,9 @@ func sanitizeLog(s string) string { return strings.ReplaceAll(s, "\x00", "") }
 // server-side stale and the cred pool slot should be invalidated.
 //
 // pion/turn surfaces these as e.g.
-//   "TURN allocate: Allocate error response (error 401: Unauthorized)"
+//
+//	"TURN allocate: Allocate error response (error 401: Unauthorized)"
+//
 // We string-match the numeric codes because pion does not export typed
 // error wrappers we could errors.As against — the Allocate error is
 // constructed via fmt.Errorf with the integer formatted into the message.
@@ -4098,7 +4169,7 @@ func (p *Proxy) runSRTPSession(sessCtx context.Context, linkID string, readyCh c
 			case <-connCtx.Done():
 				log.Printf("proxy: [conn %d] SRTP send goroutine: ctx cancelled", connIdx)
 				return
-			case pkt := <-p.sendCh:
+			case pkt := <-p.connSendCh[connIdx]:
 				_ = srtpConn.SetWriteDeadline(time.Now().Add(30 * time.Second))
 				if _, err := srtpConn.Write(pkt); err != nil {
 					log.Printf("proxy: [conn %d] SRTP send error: %v", connIdx, err)
@@ -4312,7 +4383,7 @@ func (p *Proxy) setupSRTPSession(ctx context.Context, turnAddr string, creds *TU
 // Client to the underlying TURN allocation and control conn so a single
 // Close() tears down the whole stack.
 type srtpSessionConn struct {
-	net.Conn // SRTP-wrapped conn
+	net.Conn  // SRTP-wrapped conn
 	relayConn net.PacketConn
 	tc        *turn.Client
 	ctlConn   net.PacketConn
@@ -4336,4 +4407,3 @@ func (s *srtpSessionConn) Close() error {
 	})
 	return firstErr
 }
-
