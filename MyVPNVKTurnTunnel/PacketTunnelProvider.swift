@@ -161,8 +161,9 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         options: [String : NSObject]?,
         completionHandler: @escaping (Error?) -> Void
     ) {
+        let startupStartedAt = Date()
         let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "?"
-        logMsg("startTunnel called (build \(build))")
+        logMsg("startup timing: T+0.000s startTunnel called (build \(build))")
 
         startPathMonitoring()
         wgSetTimezoneOffset(Int32(TimeZone.current.secondsFromGMT()))
@@ -204,9 +205,13 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         logMsg("proxyConfig=\(proxyConfigJSON)")
         logMsg("wg_config size=\(wgConfig.count) chars")
 
+        logMsg(String(format: "startup timing: T+%.3fs BEFORE wgStartVKBootstrap", Date().timeIntervalSince(startupStartedAt)))
+
         let handle = proxyConfigJSON.withCString { proxyPtr in
             wgStartVKBootstrap(UnsafeMutablePointer(mutating: proxyPtr))
         }
+
+        logMsg(String(format: "startup timing: T+%.3fs AFTER wgStartVKBootstrap handle=%d", Date().timeIntervalSince(startupStartedAt), handle))
 
         if handle < 0 {
             logMsg("ERROR: wgStartVKBootstrap returned \(handle)")
@@ -239,7 +244,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
             tunnelRemoteAddress: turnIP.isEmpty ? "10.0.0.1" : turnIP
         )
 
-        logMsg("setTunnelNetworkSettings: applying routes")
+        logMsg(String(format: "startup timing: T+%.3fs setTunnelNetworkSettings BEGIN", Date().timeIntervalSince(startupStartedAt)))
 
         setTunnelNetworkSettings(finalSettings) { [weak self] error in
             guard let self = self else {
@@ -255,13 +260,23 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                 return
             }
 
-            self.logMsg("setTunnelNetworkSettings OK — returning completionHandler NOW")
+            self.logMsg(String(format: "startup timing: T+%.3fs setTunnelNetworkSettings OK", Date().timeIntervalSince(startupStartedAt)))
             completionHandler(nil)
+            self.logMsg(String(format: "startup timing: T+%.3fs completionHandler(nil) returned", Date().timeIntervalSince(startupStartedAt)))
 
-            DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 1.5) { [weak self] in
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                 guard let self = self else { return }
 
-                self.logMsg("Delayed attach started")
+                let waitDeadline = Date().addingTimeInterval(2.0)
+
+                while Date() < waitDeadline {
+                    if self.findTunFileDescriptor() != nil {
+                        break
+                    }
+                    Thread.sleep(forTimeInterval: 0.05)
+                }
+
+                self.logMsg(String(format: "startup timing: T+%.3fs smart attach started", Date().timeIntervalSince(startupStartedAt)))
                 self.logMsg("findTunFileDescriptor: scanning fd 0...1024")
 
                 guard let tunFd = self.findTunFileDescriptor() else {
@@ -272,6 +287,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                 }
 
                 self.logMsg("TUN fd candidate selected=\(tunFd)")
+                self.logMsg(String(format: "startup timing: T+%.3fs BEFORE wgAttachWireGuard", Date().timeIntervalSince(startupStartedAt)))
                 self.logMsg("BEFORE wgAttachWireGuard handle=\(handle) fd=\(tunFd) wg_config_size=\(wgConfig.count)")
 
                 let rc = wgConfig.withCString { cfgPtr in
@@ -283,6 +299,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                 }
 
                 self.logMsg("wgAttachWireGuard returned rc=\(rc)")
+                self.logMsg(String(format: "startup timing: T+%.3fs AFTER wgAttachWireGuard rc=%d", Date().timeIntervalSince(startupStartedAt), rc))
 
                 if rc < 0 {
                     self.logMsg("ERROR: wgAttachWireGuard returned \(rc)")
@@ -296,9 +313,11 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                 DispatchQueue.global(qos: .utility).async { [weak self] in
                     guard let self = self else { return }
 
-                    self.logMsg("Background wgWaitBootstrapReady: waiting up to 120s...")
+                    self.logMsg(String(format: "startup timing: T+%.3fs wgWaitBootstrapReady BEGIN", Date().timeIntervalSince(startupStartedAt)))
 
                     let ready = wgWaitBootstrapReady(handle, 120_000)
+
+                    self.logMsg(String(format: "startup timing: T+%.3fs wgWaitBootstrapReady END code=%d", Date().timeIntervalSince(startupStartedAt), ready))
 
                     switch ready {
                     case 1:
