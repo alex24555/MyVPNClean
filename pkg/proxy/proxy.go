@@ -258,8 +258,9 @@ type Proxy struct {
 	// serverProbeable stays false, no kills happen — behaviour is
 	// identical to pre-probe code modulo a steady ~1-3 kbps of probe
 	// traffic that the server silently drops.
-	serverProbeable atomic.Bool
-	lastPongTimes   []atomic.Int64 // per conn, indexed by connIdx; Unix seconds
+	serverProbeable   atomic.Bool
+	lastPongTimes     []atomic.Int64 // per conn, indexed by connIdx; Unix seconds
+	staleProbeStrikes []atomic.Int32 // consecutive stale probe windows per conn
 
 	// Diagnostic counters for the probe pipeline. Populated by the per-conn
 	// probe sender / DTLS-recv branch and read at zombie-kill time so the
@@ -362,6 +363,7 @@ func NewProxy(cfg Config) *Proxy {
 		captchaCh:         make(chan string, 1),
 		bootstrapDoneCh:   make(chan error, 1),
 		lastPongTimes:     make([]atomic.Int64, cfg.NumConns),
+		staleProbeStrikes: make([]atomic.Int32, cfg.NumConns),
 		lastPingSeq:       make([]atomic.Uint64, cfg.NumConns),
 		lastPongSeq:       make([]atomic.Uint64, cfg.NumConns),
 		firstPingAt:       make([]atomic.Int64, cfg.NumConns),
@@ -2153,6 +2155,7 @@ func (p *Proxy) runDTLSSession(sessCtx context.Context, linkID string, readyCh c
 	// killed immediately on its first probe tick.
 	if connIdx >= 0 && connIdx < len(p.lastPongTimes) {
 		p.lastPongTimes[connIdx].Store(time.Now().Unix())
+		p.staleProbeStrikes[connIdx].Store(0)
 	}
 
 	// Shape-detection burst (build 110): VK randomly caps ~17% of
@@ -2231,6 +2234,7 @@ func (p *Proxy) runDTLSSession(sessCtx context.Context, linkID string, readyCh c
 						connIdx, gap.Round(time.Second))
 					if connIdx >= 0 && connIdx < len(p.lastPongTimes) {
 						p.lastPongTimes[connIdx].Store(now.Unix())
+						p.staleProbeStrikes[connIdx].Store(0)
 					}
 					lastTickAt = now
 					continue
@@ -2284,6 +2288,13 @@ func (p *Proxy) runDTLSSession(sessCtx context.Context, linkID string, readyCh c
 					lastPong := time.Unix(p.lastPongTimes[connIdx].Load(), 0)
 					stale := time.Since(lastPong)
 					if stale > probeStaleThreshold {
+						strike := p.staleProbeStrikes[connIdx].Add(1)
+						if strike < 2 {
+							log.Printf("proxy: [conn %d on slot %d] stale probe warning 1/2 (no pong for %s); keeping connection for one more probe interval",
+								connIdx, credSlot, stale.Round(time.Second))
+							continue
+						}
+
 						// Attribution data: distinguishes "we stopped sending
 						// pings" (sentSinceLastPong=0) from "server stopped
 						// echoing or echoes were lost on return" (>0). If
@@ -2562,6 +2573,7 @@ func (p *Proxy) runDTLSSession(sessCtx context.Context, linkID string, readyCh c
 					prevPongAt := p.lastPongTimes[connIdx].Load()
 					prevPongSeq := p.lastPongSeq[connIdx].Load()
 					p.lastPongTimes[connIdx].Store(nowUnix)
+					p.staleProbeStrikes[connIdx].Store(0)
 					// Pull the seq out of the echoed payload (8 bytes BE
 					// right after the magic). Servers echo verbatim so
 					// it's the same seq we sent.
@@ -3997,6 +4009,7 @@ func (p *Proxy) runSRTPSession(sessCtx context.Context, linkID string, readyCh c
 
 	if connIdx >= 0 && connIdx < len(p.lastPongTimes) {
 		p.lastPongTimes[connIdx].Store(time.Now().Unix())
+		p.staleProbeStrikes[connIdx].Store(0)
 	}
 
 	// NAT keepalive — mirror the runDTLSSession behaviour from
@@ -4072,6 +4085,7 @@ func (p *Proxy) runSRTPSession(sessCtx context.Context, linkID string, readyCh c
 						connIdx, gap.Round(time.Second))
 					if connIdx >= 0 && connIdx < len(p.lastPongTimes) {
 						p.lastPongTimes[connIdx].Store(now.Unix())
+						p.staleProbeStrikes[connIdx].Store(0)
 					}
 					lastTickAt = now
 					continue
@@ -4091,6 +4105,13 @@ func (p *Proxy) runSRTPSession(sessCtx context.Context, linkID string, readyCh c
 					lastPong := time.Unix(p.lastPongTimes[connIdx].Load(), 0)
 					stale := time.Since(lastPong)
 					if stale > probeStaleThreshold {
+						strike := p.staleProbeStrikes[connIdx].Add(1)
+						if strike < 2 {
+							log.Printf("proxy: [conn %d on slot %d] SRTP stale probe warning 1/2 (no pong for %s); keeping connection for one more probe interval",
+								connIdx, credSlot, stale.Round(time.Second))
+							continue
+						}
+
 						lastPing := p.lastPingSeq[connIdx].Load()
 						lastPongS := p.lastPongSeq[connIdx].Load()
 						var sentSinceLastPong uint64
@@ -4263,6 +4284,7 @@ func (p *Proxy) runSRTPSession(sessCtx context.Context, linkID string, readyCh c
 					prevPongAt := p.lastPongTimes[connIdx].Load()
 					prevPongSeq := p.lastPongSeq[connIdx].Load()
 					p.lastPongTimes[connIdx].Store(nowUnix)
+					p.staleProbeStrikes[connIdx].Store(0)
 					var pongSeq uint64
 					if n >= len(probePingMagic)+8 {
 						pongSeq = binary.BigEndian.Uint64(buf[len(probePingMagic) : len(probePingMagic)+8])
