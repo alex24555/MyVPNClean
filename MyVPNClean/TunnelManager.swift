@@ -480,13 +480,11 @@ class TunnelManager: ObservableObject {
             // cosmetic "preparing → connecting → connected → disconnecting
             // → disconnected → connected" UI glitch.
             //
-            // 700 ms covers the empirical 370 ms blackout with margin and
-            // is unnoticeable on top of the multi-second pre-bootstrap
-            // captcha flow that already runs before connect().
-            //
-            // TEMP for diagnostics — do not commit until verified across
-            // a handful of connect/disconnect cycles.
-            try await Task.sleep(nanoseconds: 700_000_000)
+            // Keep only a short settle window. The previous 700 ms delay
+            // was intentionally conservative and made every reconnect feel
+            // slower. 100 ms still yields briefly after preferences reload
+            // without adding a noticeable pause to normal reconnects.
+            try await Task.sleep(nanoseconds: 100_000_000)
 
             try manager.connection.startVPNTunnel()
         } catch {
@@ -994,10 +992,10 @@ class TunnelManager: ObservableObject {
             // A busy queue alone is not a failure. Recover only when the
             // pressure persists and the TURN fan-out also looks unhealthy.
             let transportUnhealthy = noActiveConnections || noTurnRTT
-            guard pressuredFor >= 20 && transportUnhealthy else { return }
+            guard pressuredFor >= 12 && transportUnhealthy else { return }
 
             if let last = lastWatchdogReconnectAt,
-               now.timeIntervalSince(last) < 30 {
+               now.timeIntervalSince(last) < 15 {
                 return
             }
 
@@ -1025,10 +1023,10 @@ class TunnelManager: ObservableObject {
         guard let since = stalledTunnelSince else { return }
 
         let stalledFor = now.timeIntervalSince(since)
-        guard stalledFor >= 12 else { return }
+        guard stalledFor >= 6 else { return }
 
         if let last = lastWatchdogReconnectAt,
-           now.timeIntervalSince(last) < 30 {
+           now.timeIntervalSince(last) < 15 {
             return
         }
 

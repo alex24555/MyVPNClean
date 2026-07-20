@@ -36,20 +36,26 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         let now = Date()
 
         let isManualRequest = reason == "app_request"
+        let isPathRecovery = reason == "path_or_watchdog"
 
         let cooldown: TimeInterval
         if isManualRequest {
             cooldown = reconnectCooldown
+        } else if isPathRecovery {
+            // A real Wi-Fi/cellular handover must recover quickly.
+            // Keep a small guard against duplicate NWPath callbacks,
+            // but do not inherit the long watchdog backoff.
+            cooldown = 3
         } else {
             switch reconnectAttempt {
             case 0:
                 cooldown = 0
             case 1:
-                cooldown = 20
+                cooldown = 8
             case 2:
-                cooldown = 30
+                cooldown = 15
             default:
-                cooldown = 45
+                cooldown = 30
             }
         }
 
@@ -72,7 +78,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         stopExtensionWatchdog()
 
         let timer = DispatchSource.makeTimerSource(queue: pathMonitorQueue)
-        timer.schedule(deadline: .now() + 20, repeating: 25)
+        timer.schedule(deadline: .now() + 8, repeating: 10)
 
         timer.setEventHandler { [weak self] in
             guard let self = self else { return }
@@ -471,8 +477,9 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                         }
 
                         let essential = self.pathEssentialIdentity(path)
+                        let previousEssential = self.lastPathEssentialIdentity
 
-                        if essential == self.lastPathEssentialIdentity {
+                        if essential == previousEssential {
                             self.logMsg("[PathMonitor] flag-only change (\(essential)) — bridge call skipped")
                             return
                         }
@@ -491,10 +498,23 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                         } else {
                             wgPathChanged(self.tunnelHandle)
 
-                            if path.status == .satisfied {
-                                self.scheduleStatsSnapshotAfterPathChange(reason: essential)
-                            } else {
-                                self.logMsg("[PathMonitor] recovery watch skipped for non-satisfied path: \(essential)")
+                            // On a real established-path handover, old TURN statistics may
+                            // remain non-zero for several seconds and falsely look healthy.
+                            // Force transport migration immediately instead of waiting for stale stats.
+                            let isWiFiOrCellular = path.usesInterfaceType(.wifi)
+                                || path.usesInterfaceType(.cellular)
+
+                            if previousEssential != nil,
+                               path.status == .satisfied,
+                               isWiFiOrCellular {
+                                self.logMsg("[PathMonitor] immediate handover reconnect: \(previousEssential ?? "nil") -> \(essential)")
+                                self.safeForceReconnect(self.tunnelHandle, reason: "path_or_watchdog")
+                            }
+
+                            self.scheduleStatsSnapshotAfterPathChange(reason: essential)
+
+                            if path.status != .satisfied {
+                                self.logMsg("[PathMonitor] early recovery started before satisfied: \(essential)")
                             }
                         }
                     }
@@ -624,7 +644,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
                 self.reconnectAttempt = 0
             }
 
-            self.logMsg("[PathMonitor] recovery decision 8s after path change (\(reason)): initial_rx=\(initialRX) current_rx=\(currentRX) initial_tx=\(initialTX) current_tx=\(currentTX) rtt=\(currentRTT) active_conns=\(activeConns) stats=\(json ?? "nil")")
+            self.logMsg("[PathMonitor] recovery decision 2s after path change (\(reason)): initial_rx=\(initialRX) current_rx=\(currentRX) initial_tx=\(initialTX) current_tx=\(currentTX) rtt=\(currentRTT) active_conns=\(activeConns) stats=\(json ?? "nil")")
 
             if activeConns == 0 || (rxStalled && txStalled && rttMissing) {
                 self.logMsg("[PathMonitor] recovery decision: stalled/empty tunnel — forcing reconnect")
@@ -635,7 +655,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         }
 
         pendingPathStatsWorkItem = recoveryItem
-        pathMonitorQueue.asyncAfter(deadline: .now() + 8.0, execute: recoveryItem)
+        pathMonitorQueue.asyncAfter(deadline: .now() + 2.0, execute: recoveryItem)
     }
 
 
