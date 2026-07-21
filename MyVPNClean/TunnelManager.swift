@@ -1121,7 +1121,7 @@ class TunnelManager: ObservableObject {
                         // Do NOT clear UI stats on short stats gaps.
                         // Keep showing last good stats; otherwise the screen flashes 0/30,
                         // uptime "—", reconnects 0, then "remembers" the real uptime later.
-                        if self.status == .connected && self.failedStatsPolls >= 6 {
+                        if self.status == .connected && self.failedStatsPolls >= 20 {
                             self.debugLog("watchdog: stats unavailable, forcing reconnect")
                             self.failedStatsPolls = 0
                             self.requestForceReconnect(reason: "stats_unavailable_watchdog")
@@ -1134,7 +1134,7 @@ class TunnelManager: ObservableObject {
                         self.debugLog("watchdog: stats decode failed (failedStatsPolls=\(self.failedStatsPolls))")
 
                         // Same rule: tolerate short stats decode gaps before forcing reconnect.
-                        if self.status == .connected && self.failedStatsPolls >= 6 {
+                        if self.status == .connected && self.failedStatsPolls >= 20 {
                             self.debugLog("watchdog: stats decode failed repeatedly, forcing reconnect")
                             self.failedStatsPolls = 0
                             self.requestForceReconnect(reason: "stats_decode_failed_watchdog")

@@ -3324,7 +3324,7 @@ func (p *Proxy) OnPathTransition() {
 	if p.credPool != nil {
 		// 5 seconds covers observed worst-case iface=other window of ~3.3s
 		// (vpn.over24h.log 15:26:08 → 15:26:11) with comfortable margin.
-		p.credPool.ExtendPauseAcquireForTransition(5 * time.Second)
+		p.credPool.ExtendPauseAcquireForTransition(1500 * time.Millisecond)
 	}
 }
 
